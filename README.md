@@ -10,4 +10,5 @@
 
 ### 📊 Dashboard Interativo
 
-[Clique aqui para ver meu painel de controle interativo](https://seunome.github.io/dashboard-sysadmin) com métricas simuladas de infraestrutura.
+[Clique aqui para ver meu painel de controle interativo](https://Van3car.github.io/dashboard-sysadmin) com métricas simuladas de infraestrutura.
+
