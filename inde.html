@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SysAdmin Analytics Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2b3137;
+            --secondary: #0d1117;
+            --accent: #58a6ff;
+            --success: #238636;
+            --warning: #daaa3f;
+            --danger: #f85149;
+            --text: #c9d1d9;
+            --card-bg: #161b22;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+        
+        header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, var(--accent), #8a2be2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #30363d;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+        
+        .card-title i {
+            margin-right: 12px;
+            font-size: 1.6rem;
+        }
+        
+        .skill-list {
+            list-style: none;
+        }
+        
+        .skill-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .skill-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .skill-name {
+            display: flex;
+            align-items: center;
+        }
+        
+        .skill-icon {
+            width: 30px;
+            text-align: center;
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .skill-level {
+            background: var(--primary);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .skill-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .metric {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background: var(--card-bg);
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            transition: all 0.3s;
+        }
+        
+        .contact-btn:hover {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+        
+        .contact-btn i {
+            margin-right: 8px;
+        }
+        
+        footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #30363d;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>SysAdmin & Data Analytics</h1>
+            <p class="tagline">
+                <span class="highlight">Automação de Infraestrutura</span> | 
+                <span class="highlight">Monitoramento (Zabbix + Grafana)</span> | 
+                <span class="highlight">Python + MySQL</span> |
+                <span class="highlight">Power BI</span>
+            </p>
+            <p>Foco em eficiência operacional e inovação através de dados</p>
+            
+            <div class="contact-links">
+                <a href="https://github.com/seu-usuario" class="contact-btn" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://linkedin.com/in/seu-perfil" class="contact-btn" target="_blank">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="mailto:seu-email@exemplo.com" class="contact-btn">
+                    <i class="fas fa-envelope"></i> E-mail
+                </a>
+            </div>
+        </header>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-server"></i>
+                <h3>Competências Técnicas</h3>
+            </div>
+            <ul class="skill-list">
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fab fa-python"></i></span>
+                        <span>Python (Automação/Análise)</span>
+                    </div>
+                    <div class="skill-level">
+                        <div class="skill-bar" style="width: 90%; background: var(--success);"></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fas fa-database"></i></span>
+                        <span>MySQL/PostgreSQL</span>
+                    </div>
+                    <div class="skill-level">
+                        <div class="skill-bar" style="width: 85%; background: var(--success);"></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fas fa-chart-line"></i></span>
+                        <span>Zabbix & Grafana</span>
+                    </div>
+                    <div class="skill-level">
+                        <div class="skill-bar" style="width: 88%; background: var(--success);"></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fas fa-chart-bar"></i></span>
+                        <span>Power BI & DataViz</span>
+                    </div>
+                    <div class="skill-level">
+                        <div class="skill-bar" style="width: 82%; background: var(--accent);"></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fas fa-infinity"></i></span>
+                        <span>Automação (Ansible/Bash)</span>
+                    </div>
+                    <div class="skill-level">
+                        <div class="skill-bar" style="width: 80%; background: var(--accent);"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-chart-pie"></i>
+                <h3>Dashboard de Métricas</h3>
+            </div>
+            <p style="margin-bottom: 20px; opacity: 0.9;">
+                KPIs simulados de infraestrutura monitorada (atualizados dinamicamente):
+            </p>
+            
+            <div class="metrics-container">
+                <div class="metric">
+                    <div class="metric-value pulse" id="uptime">99.95%</div>
+                    <div class="metric-label">Uptime Servidores</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="incidents">3</div>
+                    <div class="metric-label">Incidentes/Mês</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="automation">87%</div>
+                    <div class="metric-label">Tarefas Automatizadas</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="latency">24ms</div>
+                    <div class="metric-label">Latência Média</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px; padding: 15px; background: rgba(88, 166, 255, 0.1); border-radius: 8px; border-left: 4px solid var(--accent);">
+                <i class="fas fa-lightbulb" style="color: var(--warning);"></i>
+                <strong> Insights do Power BI:</strong> Transformo dados de monitoramento em dashboards acionáveis para tomada de decisão proativa.
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-project-diagram"></i>
+                <h3>Projetos em Destaque</h3>
+            </div>
+            <ul class="skill-list">
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fas fa-robot"></i></span>
+                        <div>
+                            <strong>Automação de Deploy</strong><br>
+                            <small>Python + Ansible para provisionamento de servidores</small>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fas fa-eye"></i></span>
+                        <div>
+                            <strong>Monitoramento Unificado</strong><br>
+                            <small>Zabbix + Grafana para infraestrutura crítica</small>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fas fa-chart-bar"></i></span>
+                        <div>
+                            <strong>Dashboard de Performance</strong><br>
+                            <small>Power BI com dados de logs e métricas de sistema</small>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="skill-name">
+                        <span class="skill-icon"><i class="fas fa-shield-alt"></i></span>
+                        <div>
+                            <strong>Otimização de Segurança</strong><br>
+                            <small>Scripts Python para análise de logs e detecção de anomalias</small>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="card" style="grid-column: span 2;">
+            <div class="card-title">
+                <i class="fas fa-bullseye"></i>
+                <h3>Filosofia de Trabalho</h3>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div>
+                    <h4 style="color: var(--accent); margin-bottom: 10px;"><i class="fas fa-tachometer-alt"></i> Eficiência</h4>
+                    <p>Automatizar processos repetitivos para liberar tempo para tarefas de alto valor e inovação.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--accent); margin-bottom: 10px;"><i class="fas fa-search"></i> Visibilidade</h4>
+                    <p>Implementar monitoramento proativo e dashboards claros para decisões baseadas em dados.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--accent); margin-bottom: 10px;"><i class="fas fa-cogs"></i> Confiabilidade</h4>
+                    <p>Garantir alta disponibilidade e resiliência da infraestrutura através de boas práticas de SysAdmin.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© <span id="current-year">2024</span> - Dashboard interativo criado com HTML, CSS e JavaScript</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">Atualização dinâmica de métricas | Visualização de dados | Portfólio SysAdmin</p>
+        </footer>
+    </div>
+
+    <script>
+        // Atualiza o ano atual no footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Animações para as métricas (simulando dados dinâmicos)
+        const metrics = {
+            uptime: { target: 99.95, current: 97, element: document.getElementById('uptime') },
+            incidents: { target: 3, current: 8, element: document.getElementById('incidents') },
+            automation: { target: 87, current: 45, element: document.getElementById('automation') },
+            latency: { target: 24, current: 65, element: document.getElementById('latency') }
+        };
+        
+        // Função para animar contagem
+        function animateMetric(metric, suffix = '') {
+            const increment = (metric.target - metric.current) / 20;
+            const timer = setInterval(() => {
+                metric.current += increment;
+                
+                if ((increment > 0 && metric.current >= metric.target) || 
+                    (increment < 0 && metric.current <= metric.target)) {
+                    metric.current = metric.target;
+                    clearInterval(timer);
+                }
+                
+                metric.element.textContent = metric.current.toFixed(metric.target % 1 === 0 ? 0 : 2) + suffix;
+            }, 50);
+        }
+        
+        // Inicia animações após o carregamento da página
+        setTimeout(() => {
+            animateMetric(metrics.uptime, '%');
+            animateMetric(metrics.incidents);
+            animateMetric(metrics.automation, '%');
+            animateMetric(metrics.latency, 'ms');
+        }, 1000);
+        
+        // Efeito de digitação para o título
+        const title = document.querySelector('h1');
+        const originalText = title.textContent;
+        title.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+            if (i < originalText.length) {
+                title.textContent += originalText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        
+        // Inicia o efeito de digitação
+        setTimeout(typeWriter, 500);
+    </script>
+</body>
+</html>
