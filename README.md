@@ -1,4 +1,4 @@
-## 👋 Olá, eu sou [Seu Nome]
+## 👋 Olá, eu sou Vanessa Cardoso
 
 > SysAdmin | Automação | Monitoramento | Python + MySQL | Power BI
 
@@ -9,4 +9,5 @@
 </div>
 
 ### 📊 Dashboard Interativo
+
 [Clique aqui para ver meu painel de controle interativo](https://seunome.github.io/dashboard-sysadmin) com métricas simuladas de infraestrutura.
